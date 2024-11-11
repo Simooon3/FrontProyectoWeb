@@ -2,7 +2,7 @@
 .new-client-form-container {
     display: flex;                   /* Usamos flexbox para centrar */
     justify-content: center;         /* Centrar horizontalmente */
-    align-items: center;             /* Centrar verticalmente */
+    align-items: flex-start;         /* Alinear al inicio en el eje vertical */
     min-height: 100vh;              /* Asegura que ocupe toda la altura de la ventana */
     padding: 1rem;                  /* Espacio alrededor del contenedor */
     background-color: #f0f2f5;      /* Color de fondo opcional */

@@ -40,7 +40,7 @@ const Sidebar = ({ onMenuClick }) => {
                     {
                         key: '5',
                         icon: <ProfileOutlined />,
-                        label: 'Profile',
+                        label: 'History',
                     },
                     {
                         key: '6',

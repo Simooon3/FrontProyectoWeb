@@ -1,16 +1,12 @@
 import './Login.css';
 import { Button, Card, Checkbox, Form, Input, Typography } from 'antd';
 import { useEffect } from 'react';
-
-const onFinish = (values) => {
-    console.log('Success:', values);
-};
-
-const onFinishFailed = (errorInfo) => {
-    console.log('Failed:', errorInfo);
-};
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const Login = () => {
+    const navigate = useNavigate();
+
     // Agregar la clase login-body al body al cargar el componente y removerla al salir
     useEffect(() => {
         document.body.classList.add('login-body');
@@ -18,6 +14,39 @@ const Login = () => {
             document.body.classList.remove('login-body');
         };
     }, []);
+
+    const onFinish = async (values) => {
+        const { email, password } = values;
+    
+        try {
+            // Hacer la solicitud POST al backend para verificar el usuario
+            const response = await axios.post(`http://localhost:4000/verificar-usuario`, {
+                correo: email,
+                contraseña: password // Enviar la contraseña también
+            });
+    
+            const { tipo_usuario, usuario } = response.data;
+            console.log('Usuario recibido:', usuario); // Agrega esta línea para verificar el objeto usuario
+    
+            if (tipo_usuario === 'Tecnico') {
+                navigate('/dashboardtecnico', { state: { usuario }}); // Enviar usuario al dashboard técnico
+            } else if (tipo_usuario === 'Cliente') {
+                navigate('/dashboardcliente', { state: { usuario }}); // Enviar usuario al dashboard cliente
+            } else {
+                console.error("Usuario no encontrado");
+            }
+        } catch (error) {
+            if (error.response && error.response.status === 401) {
+                console.error("Contraseña incorrecta");
+            } else {
+                console.error("Error al iniciar sesión:", error);
+            }
+        }
+    };
+
+    const onFinishFailed = (errorInfo) => {
+        console.log('Failed:', errorInfo);
+    };
 
     return (
         <Card className="login-container">
@@ -32,25 +61,25 @@ const Login = () => {
                 <Form.Item
                     label="Email"
                     name="email"
-                    rules={[{ required: true, message: 'Please input your email' }]}
+                    rules={[{ required: true, message: 'Por favor, ingresa tu email' }]}
                 >
-                    <Input placeholder="user@gmail.com"></Input>
+                    <Input placeholder="user@gmail.com" />
                 </Form.Item>
 
                 <Form.Item
                     label="Password"
                     name="password"
-                    rules={[{ required: true, message: 'Please input your password' }]}
+                    rules={[{ required: true, message: 'Por favor, ingresa tu contraseña' }]}
                 >
-                    <Input.Password></Input.Password>
+                    <Input.Password />
                 </Form.Item>
 
                 <Form.Item name="remember" valuePropName="checked" className="checkBoxRemember">
-                    <Checkbox>Remember me</Checkbox>
+                    <Checkbox>Recordar me</Checkbox>
                 </Form.Item>
 
                 <Button block type="primary" htmlType="submit">
-                    Log In
+                    Iniciar Sesión
                 </Button>
             </Form>
         </Card>
